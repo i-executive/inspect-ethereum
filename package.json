@@ -1,0 +1,9 @@
+{
+	"name": "aesis-proto-01",
+	"version": "0.0.1",
+	"main": "index.js",
+	"auther": "kao@iexecutive.org",
+	"dependencies": {
+		"zeppelin-solidity": "^1.10.0"
+	}
+}
