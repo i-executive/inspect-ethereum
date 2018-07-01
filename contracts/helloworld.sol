@@ -4,7 +4,7 @@ contract helloworld {
     string message;
 
     constructor() public {
-        message = "Hello World!";
+        message = "Hello World!!";
     }
 
     function setHelloworld(string _message) public {
