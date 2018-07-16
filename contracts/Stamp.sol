@@ -27,6 +27,17 @@ contract Stamp {
 
     bytes32 public lastRegisterDocId;
 
+
+    // bytes32 public lastHash;
+    // bytes32 public lastPrefixedHash;
+    // bytes32 public lastS;
+    // bytes32 public lastR;
+    // uint8 public lastV;
+
+    // uint32 public step;
+    // address public lastAddress;
+    
+
     /* Constructor */
     function Stamp() public {
 
@@ -52,10 +63,10 @@ contract Stamp {
 
     }
 
-    function getDocument(bytes32 docId) public view returns(bytes32, string, string, bytes32){
+    function getDocument(bytes32 docId) public view returns(bytes32, string, string, bytes32, address, bytes){
         Document storage doc = documents[docId];
 
-        return(doc.documentId, doc.uri, doc.revision, doc.documentHash);
+        return(doc.documentId, doc.uri, doc.revision, doc.documentHash, doc.owner.account, doc.owner.signature);
     }
 
     function signDocument(bytes32 docId, address account, bytes sign) public  {
@@ -71,8 +82,7 @@ contract Stamp {
         Document storage doc = documents[docId];
         address s = recovery(docId, doc.owner.signature);
 
-
-        return(s == account);
+       return(s == account);
 
     }    
 
@@ -113,11 +123,30 @@ contract Stamp {
             v += 27;
         }
 
+        // lastHash = digest;
+        // lastR = r;
+        // lastS = s;
+        // lastV = v;
+
         // If the version is correct return the signer address
         if (v != 27 && v != 28) {
             return (address(0));
         } else {
-            return ecrecover(digest, v, r, s);
+
+            // step = 1;
+
+
+            bytes memory prefix = "\x19Ethereum Signed Message:\n32";
+//            bytes32 prefixedDigest = keccak256(abi.encodePacked(prefix, message));
+            bytes32 prefixedDigest = keccak256(prefix, digest);
+
+            // lastPrefixedHash = prefixedDigest;
+
+            address account = ecrecover(prefixedDigest, v, r, s);
+
+            // step = 2;
+
+            return account;
         }
     }
 }
